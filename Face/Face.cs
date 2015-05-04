@@ -38,6 +38,9 @@ namespace SmartBot.Plugins.API
 		//Weapons Attack cost
 		private int WeaponAttackGlobalCost = 0;
 
+		//GlobalValueModifier
+		private int GlobalValueModifier = 0;
+		
 		public override float GetBoardValue(Board board)
 		{
 			float value = 0;
@@ -74,7 +77,12 @@ namespace SmartBot.Plugins.API
 
 			if (board.HeroEnemy.CurrentHealth <= 0)
 				value += 10000;
+			
+			if(board.HeroFriend.CurrentHealth <= 0)
+				value -= 100000;
 
+			value += GlobalValueModifier;
+			
 			return value;
 		}
 
@@ -111,7 +119,10 @@ namespace SmartBot.Plugins.API
 					SpellsCastGlobalCost += 20;
 					break;
 				case Card.Cards.BRM_013://Quick Shot
-					SpellsCastGlobalCost += 20;
+					if(board.Hand.Count > 0)
+						SpellsCastGlobalCost += 20;
+					else
+						SpellsCastGlobalValue += 5;
 					break;
 				case Card.Cards.CS2_084://Hunter's Mark
 					SpellsCastGlobalCost += 16;
@@ -178,6 +189,12 @@ namespace SmartBot.Plugins.API
 						break;
 				}
 			}
+			
+			if(!IsAttackingWithHero && !IsAttackingWithWeapon)
+			{
+				if(target != null && target >= attacker.CurrentHealth && !attacker.IsDivineShield)
+					OnMinionDeath(board,attacker);
+			}
 		}
 		public override void OnCastAbility(Board board, Card ability, Card target)
 		{
@@ -203,6 +220,8 @@ namespace SmartBot.Plugins.API
 
 			ret.HeroPowerGlobalCost = HeroPowerGlobalCost;
 			ret.WeaponAttackGlobalCost = WeaponAttackGlobalCost;
+			
+			ret.GlobalValueModifier = GlobalValueModifier;
 
 			return ret;
 		}
@@ -230,6 +249,16 @@ namespace SmartBot.Plugins.API
 			}
 
 			return 5;
+		}
+		
+		public void OnMinionDeath(Board board,Card minion)
+		{
+			switch (minion.Template.Id)
+			{
+				case Card.Cards.EX1_029://Leper Gnome
+					GlobalValueModifier += HeroEnemyHealthValue*2;
+					break;
+			}
 		}
 	}
 }
