@@ -95,6 +95,9 @@ namespace SmartBot.Plugins.API
 				case Card.Cards.CS2_188://Abusive Sergeant
                     MinionCastGlobalCost += 10;
                     break;
+				case Card.Cards.EX1_116://Leeroy Jenkins
+                    MinionCastGlobalCost += 30;
+                    break;	
             }
         }
 
