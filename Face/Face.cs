@@ -143,11 +143,11 @@ namespace SmartBot.Plugins.API
             switch (weapon.Template.Id)
             {
                 case Card.Cards.EX1_536://Eaglehorn Bow
-                    WeaponCastGlobalCost += 16;
+                    WeaponCastGlobalCost += 4;
                     break;
 
                 case Card.Cards.GVG_043://Glaivezooka
-                    WeaponCastGlobalCost += 3;
+                    WeaponCastGlobalCost += 2;
                     break;
             }
         }
