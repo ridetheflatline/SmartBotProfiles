@@ -28,13 +28,23 @@ namespace SmartBotUI.Mulligan
 			bool HasTwoDrop = Choices.Any(x => x.Cost == 2);
 			
 			WhiteList.Add("EX1_029");//Leper Gnome
+            WhiteList.Add("CS2_146");//Southsea Deckhand, ID: CS2_146
+            WhiteList.Add("EX1_010");//Worgen Infiltrator, ID: EX1_010
+            WhiteList.Add("CS2_188");//Abusive Sergeant
 			WhiteList.Add("FP1_004");//Mad Scientist
-			WhiteList.Add("GVG_043");//Glaivezooka
-			 
-			WhiteList.Add("CS2_188");//Abusive Sergeant
+			WhiteList.Add("GVG_043");//Glaivezooka			 			
 			
-			if(HasOneDrop)
+			if (HasOneDrop)
 				WhiteList.Add("NEW1_031");//Animal Companion
+
+            if (opponentClass == CClass.WARRIOR)
+                WhiteList.Add("CS2_203");//Ironbeak Owl                
+
+            if (HasCoin)
+            {
+                WhiteList.Add("FP1_002"); //Haunted Creeper
+                WhiteList.Add("NEW1_019");//Knife Juggler
+            }
 
 			BlackList.Add("CS2_084");//Hunter's Mark
 			
