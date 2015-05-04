@@ -192,7 +192,7 @@ namespace SmartBot.Plugins.API
 			
 			if(!IsAttackingWithHero && !IsAttackingWithWeapon)
 			{
-				if(target != null && target >= attacker.CurrentHealth && !attacker.IsDivineShield)
+				if(target != null && target.CurrentAtk >= attacker.CurrentHealth && !attacker.IsDivineShield)
 					OnMinionDeath(board,attacker);
 			}
 		}
