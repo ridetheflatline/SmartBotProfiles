@@ -42,7 +42,7 @@ namespace SmartBot.Plugins.API
 
             //Enemy board
             foreach (Card card in board.MinionEnemy)
-                value += card.CurrentHealth*MinionEnemyHealthValue + card.CurrentAtk*MinionEnemyAttackValue;
+                value -= card.CurrentHealth*MinionEnemyHealthValue + card.CurrentAtk*MinionEnemyAttackValue;
 
             //casting costs
             value -= MinionCastGlobalCost;
