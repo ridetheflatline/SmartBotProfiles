@@ -137,7 +137,9 @@ namespace SmartBot.Plugins.API
 					SpellsCastGlobalCost += GetCoinValue(board);
 					break;
 				case Card.Cards.EX1_610://Explosive Trap
-					SpellsCastGlobalValue += board.MinionEnemy.FindAll(x => x.CurrentHealth <= 2 && !x.IsDivineShield).Count * 2;
+				    SpellsCastGlobalCost += 3;
+					if(!board.MinionFriend.Any(x => x.IsTaunt))
+						SpellsCastGlobalValue += board.MinionEnemy.FindAll(x => x.CurrentHealth <= 2 && !x.IsDivineShield).Count * 2;
 					break;
 				case Card.Cards.EX1_554://Snake Trap
 					if(board.Hand.Any(x => x.Template.Id == Card.Cards.NEW1_019) && board.MinionFriend.Count == 0)
@@ -156,7 +158,7 @@ namespace SmartBot.Plugins.API
 			switch (weapon.Template.Id)
 			{
 				case Card.Cards.EX1_536://Eaglehorn Bow
-					WeaponCastGlobalCost += 4;
+					WeaponCastGlobalCost += 2;
 					break;
 
 				case Card.Cards.GVG_043://Glaivezooka
@@ -178,10 +180,10 @@ namespace SmartBot.Plugins.API
 
 						if (board.Secret.Count > 0 && board.WeaponFriend.CurrentDurability <= 1)
 							WeaponAttackGlobalCost += 20;
-						else if (board.Hand.Any(x => x.Template.IsSecret))
+						else if (board.Hand.Any(x => x.Template.IsSecret)  && board.WeaponFriend.CurrentDurability <= 1)
 							WeaponAttackGlobalCost += 20;
 						else
-							WeaponAttackGlobalCost += 14;
+							WeaponAttackGlobalCost += 12;
 
 						break;
 					case Card.Cards.GVG_043://Glaivezooka
