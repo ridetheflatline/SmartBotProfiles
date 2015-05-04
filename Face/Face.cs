@@ -114,7 +114,7 @@ namespace SmartBot.Plugins.API
 					break;
 				case Card.Cards.FP1_004://Mad Scientist
 					if(board.TurnCount <= 2)
-						MinionCastGlobalValue += 5;
+						MinionCastGlobalValue += 10;
 					break;
 			}
 		}
