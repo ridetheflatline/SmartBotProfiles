@@ -89,6 +89,9 @@ namespace SmartBot.Plugins.API
                 case Card.Cards.CS2_203://Ironbeak Owl
                     MinionCastGlobalCost += 16;
                     break;
+				case Card.Cards.CS2_188://Abusive Sergeant
+                    MinionCastGlobalCost += 10;
+                    break;
             }
         }
 
@@ -113,6 +116,9 @@ namespace SmartBot.Plugins.API
                     break;
                 case Card.Cards.GAME_005://The Coin
                     SpellsCastGlobalCost += GetCoinValue(board);
+                    break;
+                case Card.Cards.EX1_610://Explosive Trap
+                    SpellsCastGlobalValue += board.MinionEnemy.FindAll(x => x.CurrentHealth <= 2 && !x.IsDivineShield).Count * 2;
                     break;
             }
         }
