@@ -236,6 +236,8 @@ namespace SmartBot.Plugins.API
 
 			if (HasDropCurrentTurn)
 			{
+				if(board.MaxMana == 1 && board.GetPlayables(1, 1).Count == 2)
+					return 0;
 				return 8;
 			}
 
