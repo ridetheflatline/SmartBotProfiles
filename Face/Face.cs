@@ -87,7 +87,10 @@ namespace SmartBot.Plugins.API
                         MinionCastGlobalCost += 10;
                     break;
                 case Card.Cards.CS2_203://Ironbeak Owl
-                    MinionCastGlobalCost += 16;
+					if(!target.IsTaunt)
+						MinionCastGlobalCost += 16;
+					else
+						MinionCastGlobalCost += 6;
                     break;
 				case Card.Cards.CS2_188://Abusive Sergeant
                     MinionCastGlobalCost += 10;
