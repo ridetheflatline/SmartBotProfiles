@@ -9,6 +9,8 @@ namespace SmartBot.Plugins.API
 {
 	public class bProfile : RemoteProfile
 	{
+		private int MinionEnemyTauntValue = 5;
+
 		private int HeroEnemyHealthValue = 6;
 		private int HeroFriendHealthValue = 2;
 
@@ -51,6 +53,8 @@ namespace SmartBot.Plugins.API
 			//Hero enemy value
 			value -= board.HeroEnemy.CurrentHealth * HeroEnemyHealthValue + board.HeroEnemy.CurrentArmor * HeroEnemyHealthValue;
 
+			value -= board.MinionEnemy.FindAll(x => x.IsTaunt).Count * MinionEnemyTauntValue;
+			
 			//Friend board
 			foreach (Card card in board.MinionFriend)
 				value += card.CurrentHealth * MinionFriendHealthValue + card.CurrentAtk * MinionFriendAttackValue;
@@ -108,6 +112,10 @@ namespace SmartBot.Plugins.API
 				case Card.Cards.EX1_116://Leeroy Jenkins
 					MinionCastGlobalCost += 30;
 					break;
+				case Card.Cards.FP1_004://Mad Scientist
+					if(board.TurnCount <= 2)
+						MinionCastGlobalValue += 5;
+					break;
 			}
 		}
 
@@ -119,8 +127,10 @@ namespace SmartBot.Plugins.API
 					SpellsCastGlobalCost += 20;
 					break;
 				case Card.Cards.BRM_013://Quick Shot
-					if(board.Hand.Count > 0)
+					if(board.Hand.Count > 0 && target.Type == Card.CType.HERO)
 						SpellsCastGlobalCost += 20;
+					else if(board.Hand.Count > 0 && target.Type == Card.CType.MINION)
+						SpellsCastGlobalCost += 14;
 					else
 						SpellsCastGlobalValue += 5;
 					break;
@@ -158,11 +168,9 @@ namespace SmartBot.Plugins.API
 			switch (weapon.Template.Id)
 			{
 				case Card.Cards.EX1_536://Eaglehorn Bow
-					WeaponCastGlobalCost += 2;
 					break;
 
 				case Card.Cards.GVG_043://Glaivezooka
-					WeaponCastGlobalCost += 2;
 					break;
 			}
 		}
@@ -178,16 +186,16 @@ namespace SmartBot.Plugins.API
 				{
 					case Card.Cards.EX1_536://Eaglehorn Bow
 
-						if (board.Secret.Count > 0 && board.WeaponFriend.CurrentDurability <= 1)
+						if (board.Secret.Count > 0 && board.WeaponFriend.CurrentDurability <= 1 && !board.HasWeaponInHand())
 							WeaponAttackGlobalCost += 20;
-						else if (board.Hand.Any(x => x.Template.IsSecret)  && board.WeaponFriend.CurrentDurability <= 1)
+						else if (board.Hand.Any(x => x.Template.IsSecret)  && board.WeaponFriend.CurrentDurability <= 1 && !board.HasWeaponInHand())
 							WeaponAttackGlobalCost += 20;
 						else
-							WeaponAttackGlobalCost += 12;
+							WeaponAttackGlobalCost += 8;
 
 						break;
 					case Card.Cards.GVG_043://Glaivezooka
-						WeaponAttackGlobalCost += 5;
+						WeaponAttackGlobalCost += 3;
 						break;
 				}
 			}
