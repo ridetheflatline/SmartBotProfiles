@@ -29,7 +29,8 @@ namespace SmartBotUI.Mulligan
 			
 			WhiteList.Add("EX1_029");//Leper Gnome
 			WhiteList.Add("FP1_004");//Mad Scientist
-			
+			WhiteList.Add("GVG_043");//Glaivezooka
+			 
 			WhiteList.Add("CS2_188");//Abusive Sergeant
 			
 			if(HasOneDrop)
