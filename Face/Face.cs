@@ -43,10 +43,10 @@ namespace SmartBot.Plugins.API
 			float value = 0;
 
 			//Hero friend value
-			value += board.HeroFriend.CurrentHealth * HeroFriendHealthValue;
+			value += board.HeroFriend.CurrentHealth * HeroFriendHealthValue + board.HeroFriend.CurrentArmor * HeroFriendHealthValue;
 
 			//Hero enemy value
-			value -= board.HeroEnemy.CurrentHealth * HeroEnemyHealthValue;
+			value -= board.HeroEnemy.CurrentHealth * HeroEnemyHealthValue + board.HeroEnemy.CurrentArmor * HeroEnemyHealthValue;
 
 			//Friend board
 			foreach (Card card in board.MinionFriend)
@@ -89,6 +89,8 @@ namespace SmartBot.Plugins.API
 				case Card.Cards.CS2_203://Ironbeak Owl
 					if(target != null && !target.IsTaunt)
 						MinionCastGlobalCost += 16;
+					else if(target != null && target.Template.Id == Card.Cards.EX1_402 && !target.IsSilenced)//Armorsmith
+						MinionCastGlobalValue += 5;
 					else
 						MinionCastGlobalCost += 6;
 					break;
@@ -155,14 +157,15 @@ namespace SmartBot.Plugins.API
 		public override void OnAttack(Board board, Card attacker, Card target)
 		{
 			bool IsAttackingWithHero = (attacker.Id == board.HeroFriend.Id);
+			bool IsAttackingWithWeapon = (board.WeaponFriend != null && attacker.Id == board.WeaponFriend.Id);
 
-			if (IsAttackingWithHero && board.WeaponFriend != null)//If we attack with weapon equipped
+			if ((IsAttackingWithHero || IsAttackingWithWeapon) && board.WeaponFriend != null)//If we attack with weapon equipped
 			{
 				switch (board.WeaponFriend.Template.Id)
 				{
 					case Card.Cards.EX1_536://Eaglehorn Bow
 
-						if (board.Secret.Count > 0 && board.WeaponFriend.CurrentDurability == 1)
+						if (board.Secret.Count > 0 && board.WeaponFriend.CurrentDurability <= 1)
 							WeaponAttackGlobalCost += 20;
 						else if (board.Hand.Any(x => x.Template.IsSecret))
 							WeaponAttackGlobalCost += 20;
@@ -212,7 +215,7 @@ namespace SmartBot.Plugins.API
 
 			if (HasDropCurrentTurn)
 			{
-				return 14;
+				return 8;
 			}
 
 			if (!HasDropCurrentTurn && HasDropNextTurn)
@@ -223,10 +226,10 @@ namespace SmartBot.Plugins.API
 				{
 					return 0;
 				}
-				return 14;
+				return 8;
 			}
 
-			return 10;
+			return 5;
 		}
 	}
 }
