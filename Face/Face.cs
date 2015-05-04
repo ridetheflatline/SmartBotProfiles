@@ -123,6 +123,15 @@ namespace SmartBot.Plugins.API
                 case Card.Cards.EX1_610://Explosive Trap
                     SpellsCastGlobalValue += board.MinionEnemy.FindAll(x => x.CurrentHealth <= 2 && !x.IsDivineShield).Count * 2;
                     break;
+				case Card.Cards.EX1_554://Snake Trap
+					if(board.Hand.Any(x => x.Template.Id == Card.Cards.NEW1_019) && board.MinionFriend.Count == 0)
+						SpellsCastGlobalValue += 8;
+					else if(board.MinionFriend.Any(x => x.Template.Id == Card.Cards.NEW1_019 &&  !x.IsSilenced))
+						SpellsCastGlobalValue += 8;
+					else 
+						SpellsCastGlobalValue += 3;
+                    break;
+					
             }
         }
 
