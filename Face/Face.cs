@@ -126,7 +126,7 @@ namespace SmartBot.Plugins.API
                     break;
 
                 case Card.Cards.GVG_043://Glaivezooka
-                    WeaponCastGlobalCost += 10;
+                    WeaponCastGlobalCost += 3;
                     break;
             }
         }
@@ -150,7 +150,7 @@ namespace SmartBot.Plugins.API
 
                         break;
                     case Card.Cards.GVG_043://Glaivezooka
-                        WeaponAttackGlobalCost += 10;
+                        WeaponAttackGlobalCost += 5;
                         break;
                 }
             }
