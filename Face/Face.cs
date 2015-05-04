@@ -157,7 +157,7 @@ namespace SmartBot.Plugins.API
         }
         public override void OnCastAbility(Board board, Card ability, Card target)
         {
-            HeroPowerGlobalCost += 13;
+            HeroPowerGlobalCost += 10;
         }
 
         public override RemoteProfile DeepClone()
