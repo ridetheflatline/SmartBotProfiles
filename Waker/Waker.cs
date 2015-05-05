@@ -9,9 +9,11 @@ namespace SmartBot.Plugins.API
 	public class bProfile : RemoteProfile
 	{
 		private int FriendCardDrawValue = 5;
-		private int EnemyCardDrawValue = 7;
+		private int EnemyCardDrawValue = 2;
 
-		private int MinionEnemyTauntValue = 3;
+		private int MinionEnemyTauntValue = 6;
+		
+		private int MinionDivineShield = 4;
 
 		private int HeroEnemyHealthValue = 4;
 		private int HeroFriendHealthValue = 2;
@@ -55,16 +57,18 @@ namespace SmartBot.Plugins.API
 			//Hero enemy value
 			value -= board.HeroEnemy.CurrentHealth * HeroEnemyHealthValue + board.HeroEnemy.CurrentArmor * HeroEnemyHealthValue;
 
-			value -= board.MinionEnemy.FindAll(x => x.IsTaunt).Count * MinionEnemyTauntValue;
-
-			//Friend board
-			foreach (Card card in board.MinionFriend)
-				value += card.CurrentHealth * MinionFriendHealthValue + card.CurrentAtk * MinionFriendAttackValue;
-
-			//Enemy board
-			foreach (Card card in board.MinionEnemy)
-				value -= card.CurrentHealth * MinionEnemyHealthValue + card.CurrentAtk * MinionEnemyAttackValue;
-
+			//enemy board
+			foreach(Card c in board.MinionEnemy)
+			{
+				value -= GetCardValue(board,c);
+			}
+			
+			//friend board
+			foreach(Card c in board.MinionFriend)
+			{
+				value += GetCardValue(board,c);
+			}
+			
 			//casting costs
 			value -= MinionCastGlobalCost;
 			value -= SpellsCastGlobalCost;
@@ -84,7 +88,7 @@ namespace SmartBot.Plugins.API
 			if (board.HeroEnemy.CurrentHealth <= 0)
 				value += 10000;
 
-			if (board.HeroFriend.CurrentHealth <= 0)
+			if (board.HeroFriend.CurrentHealth <= 0 && board.FriendCardDraw == 0) 
 				value -= 100000;
 
 			value += GlobalValueModifier;
@@ -92,6 +96,30 @@ namespace SmartBot.Plugins.API
 			value += board.FriendCardDraw * FriendCardDrawValue;
 			value -= board.EnemyCardDraw * EnemyCardDrawValue;
 
+			return value;
+		}
+		
+		public float GetCardValue(Board board,Card card)
+		{
+			float value = 0;
+			
+			//divine shield value
+			if(card.IsDivineShield)
+				value +=  MinionDivineShield;
+					
+			if(card.IsFriend)
+			{
+				value += card.CurrentHealth * MinionFriendHealthValue + card.CurrentAtk * MinionFriendAttackValue;
+			}
+			else
+			{
+				value += GetThreatModifier(card);
+				//Taunt value
+				if(card.IsTaunt)
+					value += MinionEnemyTauntValue;
+				value += card.CurrentHealth * MinionEnemyHealthValue + card.CurrentAtk * MinionEnemyAttackValue;
+			}
+			
 			return value;
 		}
 
@@ -109,18 +137,23 @@ namespace SmartBot.Plugins.API
 					MinionCastGlobalCost += 10;
 					break;
 				case Card.Cards.BRM_002://Flamewaker
-					MinionCastGlobalCost += 10;
+					if(board.TurnCount < 4)
+						MinionCastGlobalCost += 16;
+					else
+						MinionCastGlobalCost += 7;
 					break;
 				case Card.Cards.EX1_096://Loot Hoarder
 					break;
 				case Card.Cards.EX1_284://Azure Drake
 					break;
 				case Card.Cards.EX1_559://Archmage Antonidas
+					if(board.SecretEnemy) MinionCastGlobalCost += 150;
 					MinionCastGlobalCost += 30;
 					break;
 				case Card.Cards.GVG_082://Clockwork Gnome
 					break;
 				case Card.Cards.NEW1_019://Knife Juggler
+					MinionCastGlobalCost += 8; 
 					break;
 				case Card.Cards.FP1_030://Loatheb
 					break;
@@ -161,14 +194,18 @@ namespace SmartBot.Plugins.API
 					SpellsCastGlobalValue += 5;
 					break;
 				case Card.Cards.GVG_005://Echo of Medivh
-					SpellsCastGlobalCost += 14;
+					SpellsCastGlobalCost += 12;
 					SpellsCastGlobalValue += board.MinionFriend.Count * 5;
+					if(board.MinionFriend.Any(x => x.Template.Id == Card.Cards.BRM_002))SpellsCastGlobalValue += 5;
 					break;
 				case Card.Cards.CS2_029://Fireball
 					SpellsCastGlobalCost += 25;
 					break;
 				case Card.Cards.CS2_022://Polymorph
 					SpellsCastGlobalCost += 14;
+					break;
+				case Card.Cards.GAME_005://The Coin
+					SpellsCastGlobalCost += 4;
 					break;
 			}
 		}
@@ -202,6 +239,7 @@ namespace SmartBot.Plugins.API
 		}
 		public override void OnCastAbility(Board board, Card ability, Card target)
 		{
+			if(board.TurnCount < 2) HeroPowerGlobalCost += 10;
 			HeroPowerGlobalCost += 2;
 		}
 
@@ -261,8 +299,17 @@ namespace SmartBot.Plugins.API
 		{
 			switch (minion.Template.Id)
 			{
-
+				
 			}
+		}
+		
+		public float GetThreatModifier(Card card)
+		{
+			switch (card.Template.Id)
+			{
+				
+			}
+			return 0;
 		}
 	}
 }
