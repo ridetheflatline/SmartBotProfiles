@@ -1,5 +1,5 @@
 /*Smarbot Profile for tempowaker mage
-* Deck from : http://www.hearthpwn.com/decks/237113-legend-tempowaker
+* Deck from : http://www.hearthpwn.com/decks/240196-fast-legend-mage
 * Contributors : Wirmate
 */
 using System.Linq;
@@ -115,11 +115,25 @@ namespace SmartBot.Plugins.API
 					break;
 				case Card.Cards.EX1_284://Azure Drake
 					break;
+				case Card.Cards.EX1_559://Archmage Antonidas
+					MinionCastGlobalCost += 30;
+					break;
+				case Card.Cards.GVG_082://Clockwork Gnome
+					break;
+				case Card.Cards.NEW1_019://Knife Juggler
+					break;
+				case Card.Cards.FP1_030://Loatheb
+					break;
+				case Card.Cards.GVG_110://Dr. Boom
+					break;
 			}
 		}
 
 		public override void OnCastSpell(Board board, Card spell, Card target)
 		{
+			if(board.MinionFriend.Any(x => x.Template.Id == Card.Cards.EX1_559))
+				SpellsCastGlobalValue += 50;
+			
 			switch (spell.Template.Id)
 			{
 				case Card.Cards.EX1_277://Arcane Missiles
@@ -188,7 +202,7 @@ namespace SmartBot.Plugins.API
 		}
 		public override void OnCastAbility(Board board, Card ability, Card target)
 		{
-			HeroPowerGlobalCost += 5;
+			HeroPowerGlobalCost += 2;
 		}
 
 		public override RemoteProfile DeepClone()
